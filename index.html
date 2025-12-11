@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Risk & Lot Size Calculator</title>
+
+    <style>
+        /* --- General Body Styles --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            /* USING YOUR REQUESTED BACKGROUND IMAGE LINK */
+            background-image: url('https://i.imgur.com/eN4NsMB.jpeg'); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed; 
+            background-color: #0d121c; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Navigation Bar Styles (SET TO BLACK) --- */
+        .nav-bar {
+            width: 100%;
+            background-color: #1a1a1a; /* BLACK MENU BAR */
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
+            text-align: center;
+        }
+        .nav-bar a {
+            text-decoration: none;
+            color: #00b3ff; 
+            padding: 8px 15px;
+            margin: 0 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav-bar a:hover {
+            background-color: #333333; 
+        }
+        .nav-bar .active {
+            background-color: #0066ff;
+            color: white;
+        }
+
+        /* Adjust content container position due to fixed header */
+        .container {
+            width: 380px; 
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6); 
+            margin-top: 80px;
+            margin-bottom: 20px;
+        }
+        
+        /* --- Watermark Style (Fixed Position) --- */
+        .watermark {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            color: rgba(255, 255, 255, 0.7); 
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            z-index: 30; 
+        }
+        
+        /* --- Calculator Content Styles (Unchanged) --- */
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #1a1a1a;
+        }
+        .rr-calculator {
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+            margin-top: 30px;
+        }
+        label {
+            font-weight: bold;
+            display: block; 
+            margin-top: 10px;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 15px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box; 
+            background-color: #f9f9f9;
+        }
+        select {
+            appearance: none; 
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M287%2069.9L146.4%20208.7%205.8%2069.9h281.2z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: 0.65em auto;
+            padding-right: 2em;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .rr-button {
+            background: #00a854; 
+        }
+        .rr-button:hover {
+            background: #008f47;
+        }
+        button:hover {
+            background: #004ecc;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #e6f0ff;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            text-align: center;
+            border: 1px solid #0066ff;
+        }
+        .rr-result {
+            background: #e0fff0; 
+            border: 1px solid #00a854;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="nav-bar">
+    <a href="index.html" class="active">📊 Lot Size Calculator</a>
+    <a href="trades.html">📈 Trade Records</a>
+</div>
+
+<div class="watermark">By Adam Mouhoub</div>
+
+<div class="container">
+    <h2>Lot Size & Risk-Reward Calculator</h2>
+
+    <label for="pair">Trading Instrument</label>
+    <select id="pair">
+        <option value="forex">Standard Forex Pair (e.g., EUR/USD)</option>
+        <option value="xauusd">Gold (XAU/USD)</option>
+        <option value="btcusd">Bitcoin (BTC/USD)</option>
+        <option value="solusd">Solana (SOL/USD)</option>
+    </select>
+
+    <h3>Lot Size Calculation</h3>
+    <label for="balance">Account Balance ($)</label>
+    <input id="balance" type="number" placeholder="e.g. 1000">
+
+    <label for="risk">Risk (%)</label>
+    <input id="risk" type="number" placeholder="e.g. 1">
+
+    <label for="sl">Stop Loss (Points)</label>
+    <input id="sl" type="number" placeholder="e.g. 200 for EUR/USD, 500 for XAUUSD">
+
+    <button onclick="calculateLot()">Calculate Lot Size</button>
+
+    <div id="lotResultBox" class="result"></div>
+    
+    <div class="rr-calculator">
+        <h3>Risk-Reward Ratio</h3>
+        <p style="font-size: 14px; color: #555;">Enter Target Profit (TP) in points to get RR.</p>
+        
+        <label for="tp">Take Profit (Points)</label>
+        <input id="tp" type="number" placeholder="e.g. 400 for EUR/USD, 1000 for XAUUSD">
+
+        <button onclick="calculateRR()" class="rr-button">Calculate R:R Ratio</button>
+        
+        <div id="rrResultBox" class="result rr-result"></div>
+    </div>
+</div>
+
+<script>
+// Define typical Lot Size Divisors (value per 1 standard lot / 100,000 units)
+const POINT_VALUES = {
+    'forex': 10, 
+    'xauusd': 10,
+    'btcusd': 1, 
+    'solusd': 1
+};
+
+
+function calculateLot() {
+    let balance = parseFloat(document.getElementById("balance").value);
+    let riskPercent = parseFloat(document.getElementById("risk").value);
+    let sl = parseFloat(document.getElementById("sl").value);
+    let pair = document.getElementById("pair").value;
+    let lotResultBox = document.getElementById("lotResultBox");
+
+    // Input Validation
+    if (balance <= 0 || riskPercent <= 0 || sl <= 0 || isNaN(balance) || isNaN(riskPercent) || isNaN(sl)) {
+        lotResultBox.style.display = "block";
+        lotResultBox.innerHTML = 
+            "<span style='color: red;'>Please enter valid, positive numbers for Lot Size calculation.</span>";
+        return;
+    }
+
+    // Get the Point Value multiplier for the selected asset
+    let pointValuePerStandardLot = POINT_VALUES[pair];
+
+    // Calculation Logic
+    let riskAmount = balance * (riskPercent / 100);
+    let lotSize = riskAmount / (sl * pointValuePerStandardLot); 
+
+    // Adjust output text for Crypto/SOL
+    if (pair === 'btcusd' || pair === 'solusd') {
+        lotResultBox.style.display = "block";
+        lotResultBox.innerHTML =
+            "Amount Risked: <strong>$" + riskAmount.toFixed(2) + "</strong><br>" +
+            "Recommended **Units** to Trade: <strong>" + lotSize.toFixed(4) + "</strong>";
+    } else {
+        lotResultBox.style.display = "block";
+        lotResultBox.innerHTML =
+            "Amount Risked: <strong>$" + riskAmount.toFixed(2) + "</strong><br>" +
+            "Recommended Lot Size: <strong>" + lotSize.toFixed(2) + "</strong> lots";
+    }
+}
+
+
+function calculateRR() {
+    let sl = parseFloat(document.getElementById("sl").value);
+    let tp = parseFloat(document.getElementById("tp").value);
+    let rrResultBox = document.getElementById("rrResultBox");
+    
+    // Input Validation
+    if (sl <= 0 || tp <= 0 || isNaN(sl) || isNaN(tp)) {
+        rrResultBox.style.display = "block";
+        rrResultBox.innerHTML = 
+            "<span style='color: red;'>Please enter valid, positive numbers for both Stop Loss and Take Profit.</span>";
+        return;
+    }
+
+    // RR Calculation (Ratio of TP points to SL points)
+    let rrRatio = tp / sl;
+    let rrRatioDisplay = rrRatio.toFixed(2);
+
+    rrResultBox.style.display = "block";
+    rrResultBox.innerHTML = 
+        "Risk-Reward Ratio: <strong>1 : " + rrRatioDisplay + "</strong>";
+}
+</script>
+
+</body>
+</html>
