@@ -48,10 +48,10 @@
             color: white;
         }
 
-        /* --- Watermark Style (MOVED TO BOTTOM) --- */
+        /* --- Watermark Style (BOTTOM LEFT) --- */
         .watermark {
             position: fixed;
-            bottom: 15px; /* Change from top: 15px to bottom: 15px */
+            bottom: 15px; 
             left: 15px;
             color: rgba(255, 255, 255, 0.7); 
             font-size: 14px;
@@ -198,6 +198,7 @@
 <script>
     const STORAGE_KEY = 'forexTradeRecords';
 
+    // The event listener is attached to ensure renderTrades runs when the page is fully loaded.
     window.onload = renderTrades; 
 
     function saveTrades(trades) {
@@ -206,17 +207,19 @@
 
     function loadTrades() {
         const tradesJson = localStorage.getItem(STORAGE_KEY);
+        // Ensure we return an array, even if storage is empty
         return tradesJson ? JSON.parse(tradesJson) : [];
     }
 
     function renderTrades() {
         const trades = loadTrades();
         const tradeBody = document.getElementById('tradeBody');
-        tradeBody.innerHTML = ''; 
+        tradeBody.innerHTML = ''; // Clear existing rows
 
         trades.forEach((trade, index) => {
             const row = tradeBody.insertRow();
             
+            // Inserting cells and content
             row.insertCell().textContent = trade.date;
             row.insertCell().textContent = trade.pair;
             row.insertCell().textContent = trade.lot;
@@ -248,6 +251,7 @@
         const rr = document.getElementById('tradeRR').value;
         const status = document.getElementById('tradeStatus').value;
 
+        // Basic validation check
         if (!date || !pair || !lot || !entry || !exit || !pl || !rr) {
             alert('Please fill in all trade details.');
             return;
@@ -268,19 +272,24 @@
         document.getElementById('tradePL').value = '';
         document.getElementById('tradeRR').value = '';
 
+        // Crucial: Call renderTrades() to refresh the table after adding a new record
         renderTrades();
     }
 
     function deleteTrade(indexToDelete) {
         if (confirm('Are you sure you want to delete this trade record?')) {
             const trades = loadTrades();
+            // Remove 1 element starting at the indexToDelete
             trades.splice(indexToDelete, 1); 
             saveTrades(trades);
             renderTrades();
         }
     }
     
-    renderTrades();
+    // The initial call ensures any previously saved trades from localStorage are displayed on load.
+    // This is often done using window.onload as above, but keeping this here for clarity.
+    // If you use window.onload = renderTrades; you only need it once.
+    // renderTrades(); 
 
 </script>
 
