@@ -12,7 +12,7 @@
             margin: 0;
             padding-top: 60px;
             
-            /* Background Image Setup (VERIFIED LINK) */
+            /* Background Image Setup */
             background-image: url('https://i.imgur.com/eN4NsMB.jpeg'); 
             background-size: cover; 
             background-position: center; 
@@ -20,10 +20,10 @@
             background-color: #0d121c; 
         }
         
-        /* --- Navigation Bar Styles (BLACK MENU BAR) --- */
+        /* --- Navigation Bar Styles (Black Menu) --- */
         .nav-bar {
             width: 100%;
-            background-color: #1a1a1a; /* SET TO BLACK */
+            background-color: #1a1a1a; 
             padding: 10px 0;
             position: fixed; 
             top: 0;
@@ -33,7 +33,7 @@
         }
         .nav-bar a {
             text-decoration: none;
-            color: #00b3ff; /* Light blue links for contrast */
+            color: #00b3ff; 
             padding: 8px 15px;
             margin: 0 10px;
             font-weight: bold;
@@ -48,10 +48,10 @@
             color: white;
         }
 
-        /* --- Watermark Style --- */
+        /* --- Watermark Style (MOVED TO BOTTOM) --- */
         .watermark {
             position: fixed;
-            top: 15px;
+            bottom: 15px; /* Change from top: 15px to bottom: 15px */
             left: 15px;
             color: rgba(255, 255, 255, 0.7); 
             font-size: 14px;
@@ -153,8 +153,6 @@
     <a href="trades.html" class="active">📈 Trade Records</a>
 </div>
 
-<div class="watermark">By Adam Mouhoub</div>
-
 <div class="header">
     <h1>Trade Record History</h1>
 </div>
@@ -194,6 +192,8 @@
     <tbody id="tradeBody">
         </tbody>
 </table>
+
+<div class="watermark">By Adam Mouhoub</div>
 
 <script>
     const STORAGE_KEY = 'forexTradeRecords';
