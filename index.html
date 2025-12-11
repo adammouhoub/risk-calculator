@@ -11,7 +11,6 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            /* USING YOUR REQUESTED BACKGROUND IMAGE LINK */
             background-image: url('https://i.imgur.com/eN4NsMB.jpeg'); 
             background-size: cover; 
             background-position: center; 
@@ -24,10 +23,10 @@
             align-items: center;
         }
 
-        /* --- Navigation Bar Styles (SET TO BLACK) --- */
+        /* --- Navigation Bar Styles (Black Menu) --- */
         .nav-bar {
             width: 100%;
-            background-color: #1a1a1a; /* BLACK MENU BAR */
+            background-color: #1a1a1a; 
             padding: 10px 0;
             position: fixed;
             top: 0;
@@ -63,10 +62,10 @@
             margin-bottom: 20px;
         }
         
-        /* --- Watermark Style (Fixed Position) --- */
+        /* --- Watermark Style (MOVED TO BOTTOM) --- */
         .watermark {
             position: fixed;
-            top: 15px;
+            bottom: 15px; /* Change from top: 15px to bottom: 15px */
             left: 15px;
             color: rgba(255, 255, 255, 0.7); 
             font-size: 14px;
@@ -156,8 +155,6 @@
     <a href="trades.html">📈 Trade Records</a>
 </div>
 
-<div class="watermark">By Adam Mouhoub</div>
-
 <div class="container">
     <h2>Lot Size & Risk-Reward Calculator</h2>
 
@@ -195,6 +192,8 @@
         <div id="rrResultBox" class="result rr-result"></div>
     </div>
 </div>
+
+<div class="watermark">By Adam Mouhoub</div>
 
 <script>
 // Define typical Lot Size Divisors (value per 1 standard lot / 100,000 units)
