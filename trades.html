@@ -1,7 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Record Tracker</title>
+
+    <style>
+        /* --- General Body and Navigation Styles --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding-top: 60px;
+            
+            /* Background Image Setup */
+            background-image: url('https://i.imgur.com/eN4NsMB.jpeg'); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed; 
+            background-color: #0d121c; 
+        }
+        
+        /* --- Navigation Bar Styles (Black Menu) --- */
+        .nav-bar {
+            width: 100%;
+            background-color: #1a1a1a; 
+            padding: 10px 0;
+            position: fixed; 
+            top: 0;
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
+            text-align: center;
+        }
+        .nav-bar a {
+            text-decoration: none;
+            color: #00b3ff; 
+            padding: 8px 15px;
+            margin: 0 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav-bar a:hover {
+            background-color: #333333; 
+        }
+        .nav-bar .active {
+            background-color: #0066ff;
+            color: white;
+        }
+
+        /* --- Watermark Style (BOTTOM LEFT) --- */
+        .watermark {
+            position: fixed;
+            bottom: 15px; 
+            left: 15px;
+            color: rgba(255, 255, 255, 0.7); 
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            z-index: 30;
+        }
+
+        /* --- Trade Page Content Styles --- */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white; 
+            text-shadow: 1px 1px 2px #000;
+        }
+        .header h1 {
+            color: #0066ff;
+        }
+        
+        /* --- Form Styles --- */
+        .form-container {
+            background: white; 
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            max-width: 800px;
+            margin: 0 auto 30px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .form-container label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            grid-column: span 1; 
+        }
+        .form-container input, .form-container select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        #addTradeBtn {
+            grid-column: span 4; 
+            padding: 10px;
+            background: #00a854;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #addTradeBtn:hover {
+            background: #008f47;
+        }
+
+        /* --- Table Styles --- */
+        #tradeTable {
+            width: 100%;
+            border-collapse: collapse;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 40px; 
+        }
+        #tradeTable th, #tradeTable td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+        #tradeTable th {
+            background-color: #0066ff;
+            color: white;
+            position: sticky; 
+            top: 50px; 
+        }
+        .status-win { color: #008f47; font-weight: bold; }
+        .status-loss { color: #cc0000; font-weight: bold; }
+        .delete-btn {
+            background: #cc0000;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">📊 Lot Size Calculator</a>
+    <a href="trades.html" class="active">📈 Trade Records</a>
+</div>
+
+<div class="header">
+    <h1>Trade Record History</h1>
+</div>
+
+<div class="form-container" id="tradeForm">
+    <label>Date: <input type="date" id="tradeDate"></label>
+    <label>Pair: <input type="text" id="tradePair" placeholder="e.g. EURUSD"></label>
+    <label>Lot Size: <input type="number" id="tradeLot" step="0.01" placeholder="e.g. 0.10"></label>
+    <label>Entry Price: <input type="number" id="tradeEntry" step="0.00001" placeholder="e.g. 1.12345"></label>
+    <label>Exit Price: <input type="number" id="tradeExit" step="0.00001" placeholder="e.g. 1.12545"></label>
+    <label>P/L ($): <input type="number" id="tradePL" step="0.01" placeholder="e.g. 50.00"></label>
+    <label>R Ratio: <input type="text" id="tradeRR" placeholder="e.g. 1:2.5"></label>
+    <label>Status: 
+        <select id="tradeStatus">
+            <option value="Win">Win</option>
+            <option value="Loss">Loss</option>
+            <option value="BreakEven">Break Even</option>
+        </select>
+    </label>
+    <button id="addTradeBtn" onclick="addTrade()">Add Trade Record</button>
+</div>
+
+<table id="tradeTable">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Pair</th>
+            <th>Lot Size</th>
+            <th>Entry</th>
+            <th>Exit</th>
+            <th>P/L ($)</th>
+            <th>R:R</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="tradeBody">
+        </tbody>
+</table>
+
+<div class="watermark">By Adam Mouhoub</div>
+
 <script>
     const STORAGE_KEY = 'forexTradeRecords';
 
-    // *** REMOVED: window.onload = renderTrades; ***
+    // The event listener is attached to ensure renderTrades runs when the page is fully loaded.
+    window.onload = renderTrades; 
 
     function saveTrades(trades) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(trades));
@@ -88,8 +286,14 @@
         }
     }
     
-    // Call renderTrades() directly at the end of the script to load data immediately.
-    renderTrades(); 
+    // The initial call ensures any previously saved trades from localStorage are displayed on load.
+    // This is often done using window.onload as above, but keeping this here for clarity.
+    // If you use window.onload = renderTrades; you only need it once.
+    // renderTrades(); 
 
 </script>
+
+</body>
+</html>
+
 
